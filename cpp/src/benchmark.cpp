@@ -1,3 +1,4 @@
+// Benchmark contract: JSON in, JSON out; timing excludes generation and formatting.
 #include "mergesort.hpp"
 #include <chrono>
 #include <iostream>
