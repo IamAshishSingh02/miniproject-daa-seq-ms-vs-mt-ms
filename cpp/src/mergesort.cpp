@@ -1,3 +1,4 @@
+// Bounded parallel recursion with a sequential threshold keeps thread creation controlled.
 #include "mergesort.hpp"
 #include <algorithm>
 #include <thread>
