@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
+#include <bits/stdc++.h>
+using namespace std;
 namespace mergesort {
-void sequential(std::vector<int> &a);
-void parallel(std::vector<int> &a, unsigned max_threads = 0, std::size_t threshold = 2048);
+void sequential(vector<int> &a);
+void parallel(vector<int> &a, unsigned max_threads = 0, size_t threshold = 2048);
 }  // namespace mergesort
