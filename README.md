@@ -1,3 +1,4 @@
+<!-- Documentation includes local setup, API contract, methodology, complexity, and limitations. -->
 # MergeSort Lab
 
 An educational Next.js dashboard comparing real C++17 sequential and `std::thread` merge sort timings. It uses identical reproducible input data, warm-safe repeated runs, correctness checks, and a print-friendly report area.
