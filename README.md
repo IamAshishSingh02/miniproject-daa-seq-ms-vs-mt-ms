@@ -13,7 +13,6 @@ MergeSort Lab is an educational performance lab comparing a sequential Merge Sor
 - Median, average, minimum, maximum, speedup, and percentage improvement.
 - Random, sorted, reverse-sorted, and duplicate-heavy distributions.
 - Correctness verification before results reach the dashboard.
-- A print-friendly report section for a college mini-project.
 
 > **Important:** timings are measured by C++ using `std::chrono`; they vary with CPU load and system configuration.
 
@@ -67,7 +66,7 @@ Speedup is `sequential time / multithreaded time`. A speedup below `1.0` is vali
 
 Supported distributions are `random`, `sorted`, `reverse`, and `duplicates`. The route limits array size to 500,000 values and repetitions to 10, then invokes only the repository-built executable through `child_process.spawn`.
 
-## Algorithm notes and complexity
+## Complexity
 
 Both versions divide the array, recursively sort each half, and merge the halves. The parallel version joins its worker before merging, and falls back to sequential recursion below a threshold.
 
@@ -101,7 +100,7 @@ src/app/api/benchmark/         Node.js API route
 
 ## Limitations
 
-This is intended for a trusted local development environment. Platforms that cannot execute native C++ processes cannot host the benchmark route unchanged. Browser report output can be printed or saved as PDF through the browser’s print dialog.
+This is intended for a trusted local development environment. Platforms that cannot execute native C++ processes cannot host the benchmark route unchanged.
 
 ## Git workflow
 
