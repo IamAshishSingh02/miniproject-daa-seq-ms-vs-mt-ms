@@ -1,3 +1,4 @@
+// Node runtime route invokes only the repository-built benchmark executable.
 import {spawn} from 'node:child_process'; import {NextResponse} from 'next/server'; import path from 'node:path';
 export const runtime='nodejs';
 const allowed=new Set(['random','sorted','reverse','duplicates']);
