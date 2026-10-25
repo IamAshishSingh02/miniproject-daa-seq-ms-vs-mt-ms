@@ -1,3 +1,4 @@
+// Dashboard deliberately starts empty so all displayed measurements are real.
 'use client';
 import {useState} from 'react';
 type Result={size:number;sequential:{averageMs:number;medianMs:number};parallel:{averageMs:number;medianMs:number};speedup:number;improvementPercent:number;correct:boolean;distribution:string;repetitions:number;seed:number};
