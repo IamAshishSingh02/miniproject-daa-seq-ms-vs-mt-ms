@@ -1,9 +1,224 @@
 // Dashboard deliberately starts empty so all displayed measurements are real.
-'use client';
-import {useState} from 'react';
-type Result={size:number;sequential:{averageMs:number;medianMs:number};parallel:{averageMs:number;medianMs:number};speedup:number;improvementPercent:number;correct:boolean;distribution:string;repetitions:number;seed:number};
-export default function Home(){
-  const [size,setSize]=useState(10000),[reps,setReps]=useState('3'),[dist,setDist]=useState('random'),[result,setResult]=useState<Result|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
-  async function run(){setBusy(true);setError('');try{const response=await fetch('/api/benchmark',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({size,repetitions:Number(reps),distribution:dist,seed:42})});const raw=await response.text();let data: any;try{data=JSON.parse(raw)}catch{throw Error(response.ok?'The benchmark returned an invalid response. Restart the local server and try again.':'The benchmark service is unavailable. Run npm run build:cpp, then restart the server.')}if(!response.ok)throw Error(data.error||'Benchmark request failed');setResult(data)}catch(e){setError(e instanceof Error?e.message:'Request failed')}finally{setBusy(false)}}
-  return <main><header><div className="brand-lockup"><div className="brand-mark">M</div><div><div className="brand">MergeX</div><div className="tagline">Real-time sorting benchmarks</div></div></div><div className="status-pill" title="The local C++17 benchmark executable is available"><span/>C++ benchmark online</div></header><section className="hero"><div className="eyebrow">COMPARE SORTING ENGINES</div><h1>See when parallel sorting pays off.</h1><p className="hero-copy">Run the same dataset through both engines and compare their measured execution time.</p><div className="grid"><label>Input length<select className="input" value={size} onChange={e=>setSize(+e.target.value)}><option value={1000}>1,000 elements</option><option value={10000}>10,000 elements</option><option value={100000}>100,000 elements</option><option value={500000}>500,000 elements</option></select></label><label>Data pattern<select className="input" value={dist} onChange={e=>setDist(e.target.value)}><option value="random">Random values</option><option value="sorted">Already sorted</option><option value="reverse">Reverse sorted</option><option value="duplicates">Duplicate-heavy</option></select></label><label><span className="label-with-info">Test runs<button type="button" className="info-button" aria-label="What are test runs?">i</button><span className="info-tooltip" role="tooltip">The number of fresh copies sorted for each implementation. More runs make the median timing more dependable.</span></span><input className="input" type="number" min="1" max="10" value={reps} onChange={e=>setReps(e.target.value.replace(/\D/g,'').replace(/^0+(?=\d)/,''))} onBlur={()=>setReps(String(Math.min(10,Math.max(1,Number(reps)||1))))}/></label></div><button className="button" onClick={run} disabled={busy}><span>{busy?'Running benchmark…':'Run comparison'}</span><span aria-hidden="true">→</span></button>{error&&<p className="error">{error}</p>}</section>{!result?<section className="empty card"><div className="empty-icon">↗</div><div><h2>Your first comparison starts here</h2><p className="muted">Choose an input profile to reveal measured timings from the C++ engine.</p></div></section>:<><div className="results-heading"><div><div className="eyebrow">MOST RECENT TEST</div><h2>Measured performance</h2></div><div className="run-meta">{result.size.toLocaleString()} values · {result.repetitions} runs · {result.distribution}</div></div><section className="results-grid"><div className="metric-card"><div className="metric-label">Single-thread time</div><div className="metric">{result.sequential.medianMs.toFixed(3)}<small> ms</small></div><div className="metric-note">baseline engine</div></div><div className="metric-card accent"><div className="metric-label">Multi-thread time</div><div className="metric">{result.parallel.medianMs.toFixed(3)}<small> ms</small></div><div className="metric-note">bounded thread engine</div></div><div className="metric-card"><div className="metric-label">Speedup</div><div className="metric">{result.speedup.toFixed(2)}<small>×</small></div><div className={result.speedup>=1?'metric-note positive':'metric-note'}>{result.speedup>=1?'Parallel finished sooner':'Parallel was slower in this run'}</div></div><div className="metric-card"><div className="metric-label">Correctness</div><div className="metric correctness">{result.correct?'✓ PASS':'CHECK'}</div><div className="metric-note">outputs match exactly</div></div></section></>}<footer className="site-footer"><span>Made by <strong>Ashish Singh</strong></span><span className="footer-dot">·</span><span>Design and Analysis of Algorithms Project</span><span className="footer-dot">·</span><span>Project Guide: <strong>Prof. Rushali Katkar</strong></span></footer></main>
+"use client";
+import { useState } from "react";
+type Result = {
+  size: number;
+  sequential: { averageMs: number; medianMs: number };
+  parallel: { averageMs: number; medianMs: number };
+  speedup: number;
+  improvementPercent: number;
+  correct: boolean;
+  distribution: string;
+  repetitions: number;
+  seed: number;
+};
+export default function Home() {
+  const [size, setSize] = useState(10000),
+    [reps, setReps] = useState("3"),
+    [dist, setDist] = useState("random"),
+    [result, setResult] = useState<Result | null>(null),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  async function run() {
+    setBusy(true);
+    setError("");
+    try {
+      const response = await fetch("/api/benchmark", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          size,
+          repetitions: Number(reps),
+          distribution: dist,
+          seed: 42,
+        }),
+      });
+      const raw = await response.text();
+      let data: any;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw Error(
+          response.ok
+            ? "The benchmark returned an invalid response. Restart the local server and try again."
+            : "The benchmark service is unavailable. Run npm run build:cpp, then restart the server.",
+        );
+      }
+      if (!response.ok) throw Error(data.error || "Benchmark request failed");
+      setResult(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Request failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <main>
+      <header>
+        <div className="brand-lockup">
+          <div className="brand-mark">M</div>
+          <div>
+            <div className="brand">MergeX</div>
+            <div className="tagline">Real-time sorting benchmarks</div>
+          </div>
+        </div>
+        <div
+          className="status-pill"
+          title="The local C++17 benchmark executable is available"
+        >
+          <span />
+          C++ benchmark online
+        </div>
+      </header>
+      <section className="hero">
+        <div className="eyebrow">COMPARE SORTING ENGINES</div>
+        <h1>See when parallel sorting pays off.</h1>
+        <p className="hero-copy">
+          Run the same dataset through both engines and compare their measured
+          execution time.
+        </p>
+        <div className="grid">
+          <label>
+            Input length
+            <select
+              className="input"
+              value={size}
+              onChange={(e) => setSize(+e.target.value)}
+            >
+              <option value={1000}>1,000 elements</option>
+              <option value={10000}>10,000 elements</option>
+              <option value={100000}>100,000 elements</option>
+              <option value={500000}>500,000 elements</option>
+            </select>
+          </label>
+          <label>
+            Data pattern
+            <select
+              className="input"
+              value={dist}
+              onChange={(e) => setDist(e.target.value)}
+            >
+              <option value="random">Random values</option>
+              <option value="sorted">Already sorted</option>
+              <option value="reverse">Reverse sorted</option>
+              <option value="duplicates">Duplicate-heavy</option>
+            </select>
+          </label>
+          <label>
+            <span className="label-with-info">
+              Test runs
+              <button
+                type="button"
+                className="info-button"
+                aria-label="What are test runs?"
+              >
+                i
+              </button>
+              <span className="info-tooltip" role="tooltip">
+                The number of fresh copies sorted for each implementation. More
+                runs make the median timing more dependable.
+              </span>
+            </span>
+            <input
+              className="input"
+              type="number"
+              min="1"
+              max="10"
+              value={reps}
+              onChange={(e) =>
+                setReps(
+                  e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, ""),
+                )
+              }
+              onBlur={() =>
+                setReps(String(Math.min(10, Math.max(1, Number(reps) || 1))))
+              }
+            />
+          </label>
+        </div>
+        <button className="button" onClick={run} disabled={busy}>
+          <span>{busy ? "Running benchmark…" : "Run comparison"}</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        {error && <p className="error">{error}</p>}
+      </section>
+      {!result ? (
+        <section className="empty card">
+          <div className="empty-icon">↗</div>
+          <div>
+            <h2>Your first comparison starts here</h2>
+            <p className="muted">
+              Choose an input profile to reveal measured timings from the C++
+              engine.
+            </p>
+          </div>
+        </section>
+      ) : (
+        <>
+          <div className="results-heading">
+            <div>
+              <div className="eyebrow">MOST RECENT TEST</div>
+              <h2>Measured performance</h2>
+            </div>
+            <div className="run-meta">
+              {result.size.toLocaleString()} values · {result.repetitions} runs
+              · {result.distribution}
+            </div>
+          </div>
+          <section className="results-grid">
+            <div className="metric-card">
+              <div className="metric-label">Single-thread time</div>
+              <div className="metric">
+                {result.sequential.medianMs.toFixed(3)}
+                <small> ms</small>
+              </div>
+              <div className="metric-note">baseline engine</div>
+            </div>
+            <div className="metric-card accent">
+              <div className="metric-label">Multi-thread time</div>
+              <div className="metric">
+                {result.parallel.medianMs.toFixed(3)}
+                <small> ms</small>
+              </div>
+              <div className="metric-note">bounded thread engine</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-label">Speedup</div>
+              <div className="metric">
+                {result.speedup.toFixed(2)}
+                <small>×</small>
+              </div>
+              <div
+                className={
+                  result.speedup >= 1 ? "metric-note positive" : "metric-note"
+                }
+              >
+                {result.speedup >= 1
+                  ? "Parallel finished sooner"
+                  : "Parallel was slower in this run"}
+              </div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-label">Correctness</div>
+              <div className="metric correctness">
+                {result.correct ? "✓ PASS" : "CHECK"}
+              </div>
+              <div className="metric-note">outputs match exactly</div>
+            </div>
+          </section>
+        </>
+      )}
+      <footer className="site-footer">
+        <span>
+          Made by <strong>Ashish Singh</strong>
+        </span>
+        <span className="footer-dot">·</span>
+        <span>Design and Analysis of Algorithms Project</span>
+        <span className="footer-dot">·</span>
+        <span>
+          Project Guide: <strong>Prof. Rushali Katkar</strong>
+        </span>
+      </footer>
+    </main>
+  );
 }

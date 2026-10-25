@@ -21,12 +21,12 @@ MergeX is an educational performance lab comparing a sequential Merge Sort with 
 
 ## Technology
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js App Router, React, TypeScript, CSS |
-| Backend | Next.js Node.js Route Handler |
-| Algorithms | C++17, `std::thread`, `std::chrono` |
-| Build | `g++`, Bash build script |
+| Layer      | Technology                                 |
+| ---------- | ------------------------------------------ |
+| Frontend   | Next.js App Router, React, TypeScript, CSS |
+| Backend    | Next.js Node.js Route Handler              |
+| Algorithms | C++17, `std::thread`, `std::chrono`        |
+| Build      | `g++`, Bash build script                   |
 
 ## Quick start
 
@@ -71,7 +71,13 @@ Speedup is `sequential time / multithreaded time`. A speedup below `1.0` is vali
 `POST /api/benchmark`
 
 ```json
-{"size":10000,"distribution":"random","seed":42,"repetitions":3,"threads":0}
+{
+  "size": 10000,
+  "distribution": "random",
+  "seed": 42,
+  "repetitions": 3,
+  "threads": 0
+}
 ```
 
 Supported distributions are `random`, `sorted`, `reverse`, and `duplicates`. The route limits array size to 500,000 values and repetitions to 10, then invokes only the repository-built executable through `child_process.spawn`.
@@ -80,12 +86,12 @@ Supported distributions are `random`, `sorted`, `reverse`, and `duplicates`. The
 
 Both versions divide the array, recursively sort each half, and merge the halves. The parallel version joins its worker before merging, and falls back to sequential recursion below a threshold.
 
-| Case | Sequential Merge Sort | Multithreaded Merge Sort |
-| --- | --- | --- |
-| Best | O(n log n) | O(n log n) total work |
-| Average | O(n log n) | O(n log n) total work |
-| Worst | O(n log n) | O(n log n) total work |
-| Auxiliary space | O(n) | O(n), plus thread-stack overhead |
+| Case            | Sequential Merge Sort | Multithreaded Merge Sort         |
+| --------------- | --------------------- | -------------------------------- |
+| Best            | O(n log n)            | O(n log n) total work            |
+| Average         | O(n log n)            | O(n log n) total work            |
+| Worst           | O(n log n)            | O(n log n) total work            |
+| Auxiliary space | O(n)                  | O(n), plus thread-stack overhead |
 
 Parallel elapsed time depends on processor count, workload size, scheduling, synchronization, and thread-management overhead. It is not guaranteed to be faster.
 
