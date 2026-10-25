@@ -1,11 +1,9 @@
-#include "../include/mergesort.hpp"
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include "../include/mergesort.hpp"
 int main() {
-  for (auto v :
-       {std::vector<int>{}, std::vector<int>{1}, std::vector<int>{3, 1, 2},
-        std::vector<int>{1, 1, -2, 4, 0}, std::vector<int>{5, 4, 3, 2, 1}}) {
+  for (auto v : {std::vector<int>{}, std::vector<int>{1}, std::vector<int>{3, 1, 2}, std::vector<int>{1, 1, -2, 4, 0}, std::vector<int>{5, 4, 3, 2, 1}}) {
     auto e = v;
     mergesort::sequential(e);
     assert(std::is_sorted(e.begin(), e.end()));

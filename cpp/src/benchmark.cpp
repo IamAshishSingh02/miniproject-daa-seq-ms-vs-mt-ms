@@ -1,6 +1,5 @@
 // Benchmark contract: JSON in, JSON out; timing excludes generation and
 // formatting.
-#include "mergesort.hpp"
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -8,18 +7,16 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "mergesort.hpp"
 static size_t num(const std::string &s, const std::string &k, size_t d) {
   auto p = s.find("\"" + k + "\"");
-  if (p == std::string::npos)
-    return d;
+  if (p == std::string::npos) return d;
   p = s.find(':', p);
   return std::stoull(s.substr(p + 1));
 }
-static std::string str(const std::string &s, const std::string &k,
-                       const std::string &d) {
+static std::string str(const std::string &s, const std::string &k, const std::string &d) {
   auto p = s.find("\"" + k + "\"");
-  if (p == std::string::npos)
-    return d;
+  if (p == std::string::npos) return d;
   p = s.find(':', p);
   p = s.find('"', p) + 1;
   return s.substr(p, s.find('"', p) - p);
@@ -28,24 +25,18 @@ int main() {
   std::ostringstream q;
   q << std::cin.rdbuf();
   auto s = q.str();
-  size_t n = num(s, "size", 10000),
-         reps = std::max<size_t>(1, num(s, "repetitions", 3)),
-         seed = num(s, "seed", 42), threads = num(s, "threads", 0);
+  size_t n = num(s, "size", 10000), reps = std::max<size_t>(1, num(s, "repetitions", 3)), seed = num(s, "seed", 42), threads = num(s, "threads", 0);
   auto d = str(s, "distribution", "random");
   std::mt19937 g(seed);
   std::vector<int> base(n);
   if (d == "sorted")
-    for (size_t i = 0; i < n; i++)
-      base[i] = i;
+    for (size_t i = 0; i < n; i++) base[i] = i;
   else if (d == "reverse")
-    for (size_t i = 0; i < n; i++)
-      base[i] = n - i;
+    for (size_t i = 0; i < n; i++) base[i] = n - i;
   else if (d == "duplicates")
-    for (auto &x : base)
-      x = g() % 100;
+    for (auto &x : base) x = g() % 100;
   else
-    for (auto &x : base)
-      x = (int)g();
+    for (auto &x : base) x = (int)g();
   std::vector<double> a, b;
   for (size_t r = 0; r < reps; r++) {
     auto x = base, y = base;
@@ -56,13 +47,11 @@ int main() {
     auto v = std::chrono::steady_clock::now();
     a.push_back(std::chrono::duration<double, std::milli>(u - t).count());
     b.push_back(std::chrono::duration<double, std::milli>(v - u).count());
-    if (x != y)
-      return 2;
+    if (x != y) return 2;
   }
   auto avg = [](auto &x) {
     double z = 0;
-    for (auto v : x)
-      z += v;
+    for (auto v : x) z += v;
     return z / x.size();
   };
   auto mn = [](auto &x) { return *std::min_element(x.begin(), x.end()); };
@@ -70,15 +59,8 @@ int main() {
   std::sort(a.begin(), a.end());
   std::sort(b.begin(), b.end());
   double sa = avg(a), pb = avg(b);
-  std::cout << "{\"size\":" << n << ",\"seed\":" << seed
-            << ",\"distribution\":\"" << d << "\",\"repetitions\":" << reps
-            << ",\"sequential\":{"
-            << "\"averageMs\":" << sa << ",\"medianMs\":" << a[a.size() / 2]
-            << ",\"minMs\":" << mn(a) << ",\"maxMs\":" << mx(a)
-            << "},\"parallel\":{"
-            << "\"averageMs\":" << pb << ",\"medianMs\":" << b[b.size() / 2]
-            << ",\"minMs\":" << mn(b) << ",\"maxMs\":" << mx(b)
-            << "},\"correct\":true,\"speedup\":" << (pb ? sa / pb : 0)
-            << ",\"improvementPercent\":" << (sa ? (sa - pb) / sa * 100 : 0)
-            << "}\n";
+  std::cout << "{\"size\":" << n << ",\"seed\":" << seed << ",\"distribution\":\"" << d << "\",\"repetitions\":" << reps << ",\"sequential\":{"
+            << "\"averageMs\":" << sa << ",\"medianMs\":" << a[a.size() / 2] << ",\"minMs\":" << mn(a) << ",\"maxMs\":" << mx(a) << "},\"parallel\":{"
+            << "\"averageMs\":" << pb << ",\"medianMs\":" << b[b.size() / 2] << ",\"minMs\":" << mn(b) << ",\"maxMs\":" << mx(b)
+            << "},\"correct\":true,\"speedup\":" << (pb ? sa / pb : 0) << ",\"improvementPercent\":" << (sa ? (sa - pb) / sa * 100 : 0) << "}\n";
 }
