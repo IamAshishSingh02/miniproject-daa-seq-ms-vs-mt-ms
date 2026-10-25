@@ -1,6 +1,6 @@
 # MergeX
 
-### Understanding Parallelism Through Sorting
+### A focused lab for real sequential and parallel sorting benchmarks
 
 MergeX is an educational performance lab comparing a sequential Merge Sort with a bounded multithreaded C++17 implementation. Benchmark numbers come from a real local C++ executable.
 
@@ -13,6 +13,9 @@ MergeX is an educational performance lab comparing a sequential Merge Sort with 
 - Median, average, minimum, maximum, speedup, and percentage improvement.
 - Random, sorted, reverse-sorted, and duplicate-heavy distributions.
 - Correctness verification before results reach the dashboard.
+- A compact dark burgundy/plum interface with responsive layouts.
+- An `i` help button explaining test repetitions for new users.
+- A green engine-status indicator when the local C++ executable is available.
 
 > **Important:** timings are measured by C++ using `std::chrono`; they vary with CPU load and system configuration.
 
@@ -35,7 +38,7 @@ npm run build:cpp
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). For production, run `npm run build && npm start`.
+Open [http://localhost:3000](http://localhost:3000). The dashboard is branded **MergeX** and uses a dark burgundy, plum, and charcoal visual theme. For production, run `npm run build && npm start`.
 
 Useful commands:
 
@@ -46,6 +49,13 @@ npm run dev         # Start the development server
 npm run build       # Create an optimized frontend build
 ```
 
+## Dashboard controls
+
+- **Input length** selects 1,000, 10,000, 100,000, or 500,000 values.
+- **Data pattern** selects random, already sorted, reverse sorted, or duplicate-heavy data.
+- **Test runs** is the number of fresh copies sorted for each implementation. More runs make the median less sensitive to one noisy measurement; the dashboard explains this through the adjacent `i` button.
+- **C++ benchmark online** confirms that the local C++17 executable is ready.
+
 ## How the benchmark works
 
 1. The backend validates size, distribution, repetitions, seed, and thread budget.
@@ -54,7 +64,7 @@ npm run build       # Create an optimized frontend build
 4. Only sorting is timed; generation, copying, and JSON formatting are excluded.
 5. Outputs are compared for correctness before statistics are returned.
 
-Speedup is `sequential time / multithreaded time`. A speedup below `1.0` is valid: thread overhead exceeded the parallel work saved.
+Speedup is `sequential time / multithreaded time`. A speedup below `1.0` is valid: thread overhead exceeded the parallel work saved for that run. Parallel sorting is not guaranteed to be faster, especially for smaller arrays.
 
 ## API contract
 
@@ -107,7 +117,7 @@ This is intended for a trusted local development environment. Platforms that can
 ```bash
 git status
 git add .
-git commit -m "docs: improve project README"
+git commit -m "describe your change"
 git push origin main
 ```
 
