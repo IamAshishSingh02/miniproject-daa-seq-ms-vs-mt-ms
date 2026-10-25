@@ -1,8 +1,8 @@
-# MergeSort Lab
+# MergeX
 
 ### Understanding Parallelism Through Sorting
 
-MergeSort Lab is an educational performance lab comparing a sequential Merge Sort with a bounded multithreaded C++17 implementation. Benchmark numbers come from a real local C++ executable.
+MergeX is an educational performance lab comparing a sequential Merge Sort with a bounded multithreaded C++17 implementation. Benchmark numbers come from a real local C++ executable.
 
 ![C++](https://img.shields.io/badge/C%2B%2B-17-00599C) ![Next.js](https://img.shields.io/badge/Next.js-App%20Router-000000)
 
